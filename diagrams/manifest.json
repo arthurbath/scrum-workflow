@@ -1,0 +1,8 @@
+[
+  {
+    "id": "story-status-workflow",
+    "title": "Story Status Workflow",
+    "description": "Scrum ticket lifecycle with a design-vs-development decision branch.",
+    "file": "diagrams/story-status-workflow.md"
+  }
+]

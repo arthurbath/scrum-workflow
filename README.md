@@ -2,44 +2,15 @@
 
 This repo contains the working version of the team's scrum ticket status workflow.
 
-## Status Flow
+## Web View
 
-```mermaid
-flowchart TD
-    B["0. Backlog"] -->|"Issues created but not yet prioritized for a sprint"| T["1. To Do"]
+The browser-rendered version lives in `index.html`. It now loads diagram content from Markdown files listed in `diagrams/manifest.json`, so the webpage and the Markdown source stay in sync.
 
-    T -->|"Design-related issue begins work"| D["2. In Design"]
-    D -->|"Design work completed"| DONE(("Done"))
+## Diagrams
 
-    T -->|"Development issue begins coding"| DEV["3. In Development"]
-    DEV -->|"Work is blocked or paused"| HOLD["On Hold / Blocked"]
-    HOLD -->|"Work resumes"| DEV
+- `diagrams/story-status-workflow.md`: current workflow diagram source
+- `diagrams/manifest.json`: list of diagrams shown in the browser switcher
 
-    DEV -->|"Awaiting peer review before deployment to the Development environment"| CADEV["4. Code Approval - Dev"]
+## Notes
 
-    subgraph DE["Development Environment"]
-        direction TB
-        RQAD["5. Ready for QA - Dev"] -->|"QA begins testing in the Development environment"| IQAD["6. In QA - Dev"]
-        IQAD -->|"Approved in Dev and ready for promotion to Staging"| RSTG["7. Ready for STG"]
-    end
-
-    CADEV -->|"Approved and deployed to Dev; awaiting QA testing"| RQAD
-
-    subgraph SE["Staging Environment"]
-        direction TB
-        CASTG["8. Code Approval - STG"] -->|"Deployed to Staging and awaiting verification"| RQAS["9. Ready for QA - STG"]
-        RQAS -->|"QA begins testing in the Staging environment"| IQAS["10. In QA - STG"]
-        IQAS -->|"Approved in Staging and ready for User Acceptance Testing"| RUAT["11. Ready for UAT"]
-        RUAT -->|"Signed off by stakeholders and ready for Production deployment"| RPROD["12. Ready for PROD"]
-    end
-
-    RSTG -->|"Awaiting final review/approval for deployment to Staging"| CASTG
-
-    subgraph PE["Production Environment"]
-        direction TB
-        CAPROD["13. Code Approval - PROD"] -->|"Issues successfully deployed and live in the Production environment"| IPROD["14. In Production"]
-    end
-
-    RPROD -->|"Awaiting final administrative approval for the Production release"| CAPROD
-    IPROD -->|"Work complete"| DONE
-```
+When the page is served over GitHub Pages or any local web server, `index.html` fetches the Markdown files directly and renders the first Mermaid code block it finds. Browsers usually block that fetch behavior on raw `file://` URLs, so local preview should use a small HTTP server if needed.
