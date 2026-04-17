@@ -10,20 +10,20 @@ flowchart TD
     NOTE_PROPOSED["💬 Blue nodes indicate proposed new statuses<br/>or proposed changes to statuses that already exist."]
 
     B["Backlog"] -->|"PO prep begins"| RFR["Ready for Refinement"]
-    RFR -->|"Ticket is refined and ready for estimation"| RFP["Ready for Pointing"]
-    RFP -->|"Ticket is pointed and ready for assignment"| DEC{"Design or development story?"}
+    RFR -->|"Ticket is ready for assignment"| DEC{"Design or development story?"}
 
     DEC -->|"Design story"| RFD["Ready for Design"]
     RFD -->|"Design work begins"| D["In Design"]
     D -->|"Design work completed"| DONE(("Done"))
 
-    DEC -->|"Development story"| RFDV["Ready for Development"]
+    DEC -->|"Development story"| RFP["Ready for Pointing"]
+    RFP -->|"Ticket is pointed and ready for development"| RFDV["Ready for Development"]
     RFDV -->|"Development issue begins coding"| DEV["In Development"]
     DEV -->|"Peer review is needed in Dev"| RCADEV["Ready for Code Approval - Dev"]
 
     subgraph DE["Development Environment"]
         direction TB
-        RCADEV -->|"Reviewer picks up the work"| ICADEV["In Code Approval - Dev"]
+        RCADEV -->|"Reviewer picks up the work"| ICADEV["Undergoing Code Approval - Dev"]
         ICADEV -->|"Approved and deployed to Dev;<br/>awaiting QA testing"| RQAD["Ready for QA - Dev"]
         RQAD -->|"QA begins testing in the<br/>Development environment"| IQAD["In QA - Dev"]
         IQAD -->|"Approved in Dev and ready<br/>for promotion to Staging"| RSTG["Ready for STG"]
@@ -33,7 +33,7 @@ flowchart TD
 
     subgraph SE["Staging Environment"]
         direction TB
-        RCASTG -->|"Reviewer picks up the work"| ICASTG["In Code Approval - STG"]
+        RCASTG -->|"Reviewer picks up the work"| ICASTG["Undergoing Code Approval - STG"]
         ICASTG -->|"Deployed to Staging and<br/>awaiting verification"| RQAS["Ready for QA - STG"]
         RQAS -->|"QA begins testing in the<br/>Staging environment"| IQAS["In QA - STG"]
         IQAS -->|"Approved in Staging and ready<br/>for User Acceptance Testing"| RUAT["Ready for UAT"]
