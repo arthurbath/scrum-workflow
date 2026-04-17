@@ -40,10 +40,7 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      display: block;
       width: 100%;
       padding: 16px 24px 18px;
       margin-bottom: 18px;
@@ -70,33 +67,66 @@
     }
 
     .toolbar-controls {
+      width: 100%;
+    }
+
+    .diagram-nav {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+      width: 100%;
+      border: 1px solid #c3cad1;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #ffffff;
     }
 
-    .toolbar-controls label {
-      color: var(--muted);
-      font-size: 0.88rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-    }
-
-    select {
-      appearance: none;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: var(--surface-strong);
+    .diagram-nav-button {
+      flex: 1 1 0;
+      border: 0;
+      border-right: 1px solid #c3cad1;
+      background: #ffffff;
       color: var(--text);
-      padding: 0.7rem 1rem;
+      padding: 0.95rem 1rem;
       font: inherit;
-      min-width: 240px;
+      font-size: 0.9rem;
+      line-height: 1.2;
+      cursor: pointer;
+    }
+
+    .diagram-nav-button:last-child {
+      border-right: 0;
+    }
+
+    .diagram-nav-button[aria-current="page"] {
+      background: #d9ecff;
+      color: #11263f;
     }
 
     .diagram-wrap {
       padding: 8px 0 24px;
       overflow: auto;
+    }
+
+    .diagram-stack {
+      display: grid;
+      gap: 28px;
+    }
+
+    .diagram-panel {
+      display: grid;
+      gap: 10px;
+    }
+
+    .diagram-panel-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--text);
+    }
+
+    .diagram-panel-copy {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
 
     .mermaid {
@@ -156,9 +186,21 @@
       }
 
       .toolbar {
-        flex-direction: column;
-        align-items: flex-start;
         padding: 12px 16px 14px;
+      }
+
+      .diagram-nav {
+        width: 100%;
+        flex-direction: column;
+      }
+
+      .diagram-nav-button {
+        border-right: 0;
+        border-bottom: 1px solid #c3cad1;
+      }
+
+      .diagram-nav-button:last-child {
+        border-bottom: 0;
       }
 
       .diagram-wrap {
@@ -170,6 +212,10 @@
         padding: 12px 0 20px;
       }
 
+      .diagram-stack {
+        gap: 20px;
+      }
+
       .content {
         width: calc(100vw - 24px);
       }
@@ -179,13 +225,8 @@
 <body>
   <main class="page">
     <div class="toolbar">
-      <div>
-        <div class="toolbar-title" id="diagram-title">Ticket Lifecycle</div>
-        <div class="toolbar-copy" id="diagram-description">Loading diagram source from Markdown.</div>
-      </div>
       <div class="toolbar-controls">
-        <label for="diagram-select">Diagram</label>
-        <select id="diagram-select" aria-label="Select a diagram"></select>
+        <nav class="diagram-nav" id="diagram-nav" aria-label="Diagram navigation"></nav>
       </div>
     </div>
     <section class="content" aria-label="Scrum workflow diagram">
@@ -228,15 +269,13 @@
     });
 
     const manifestPath = "diagrams/manifest.json";
-    const select = document.getElementById("diagram-select");
-    const title = document.getElementById("diagram-title");
-    const description = document.getElementById("diagram-description");
+    const nav = document.getElementById("diagram-nav");
     const wrap = document.getElementById("diagram-wrap");
     const renderTarget = document.getElementById("diagram-render");
 
-    function extractMermaid(markdown) {
-      const match = markdown.match(/```mermaid\s*([\s\S]*?)```/i);
-      return match ? match[1].trim() : "";
+    function extractMermaidBlocks(markdown) {
+      const matches = [...markdown.matchAll(/```mermaid\s*([\s\S]*?)```/gi)];
+      return matches.map((match) => match[1].trim()).filter(Boolean);
     }
 
     function extractTitle(markdown) {
@@ -249,6 +288,10 @@
       return lines.find((line) => line && !line.startsWith("#") && !line.startsWith("```")) || "";
     }
 
+    function extractSectionTitles(markdown) {
+      return [...markdown.matchAll(/^##\s+(.+)$/gm)].map((match) => match[1].trim());
+    }
+
     function setStatus(kind, message) {
       wrap.classList.remove("is-loading", "is-error");
       if (kind) {
@@ -257,12 +300,17 @@
       wrap.dataset.status = message;
     }
 
+    function setActiveNav(activeId) {
+      for (const button of nav.querySelectorAll("button")) {
+        button.setAttribute("aria-current", button.dataset.diagramId === activeId ? "page" : "false");
+      }
+    }
+
     let renderCount = 0;
 
     async function renderDiagram(entry) {
       setStatus("is-loading", `Loading ${entry.title}...`);
-      title.textContent = entry.title;
-      description.textContent = entry.description || "Loading diagram source from Markdown.";
+      setActiveNav(entry.id);
 
       try {
         const response = await fetch(entry.file);
@@ -271,19 +319,36 @@
         }
 
         const markdown = await response.text();
-        const diagram = extractMermaid(markdown);
-        if (!diagram) {
+        const diagrams = extractMermaidBlocks(markdown);
+        if (diagrams.length === 0) {
           throw new Error(`No Mermaid block found in ${entry.file}`);
         }
 
-        title.textContent = extractTitle(markdown) || entry.title;
-        description.textContent = extractDescription(markdown) || entry.description || "Rendered from Markdown.";
+        const sectionTitles = extractSectionTitles(markdown);
         renderTarget.innerHTML = "";
+        renderTarget.className = "diagram-stack";
 
-        const { svg, bindFunctions } = await mermaid.render(`diagram-${renderCount++}`, diagram);
-        renderTarget.innerHTML = svg;
-        if (typeof bindFunctions === "function") {
-          bindFunctions(renderTarget);
+        for (let index = 0; index < diagrams.length; index += 1) {
+          const panel = document.createElement("section");
+          panel.className = "diagram-panel";
+
+          if (diagrams.length > 1) {
+            const panelTitle = document.createElement("div");
+            panelTitle.className = "diagram-panel-title";
+            panelTitle.textContent = sectionTitles[index] || `Diagram ${index + 1}`;
+            panel.appendChild(panelTitle);
+          }
+
+          const mermaidNode = document.createElement("div");
+          mermaidNode.className = "mermaid";
+          panel.appendChild(mermaidNode);
+          renderTarget.appendChild(panel);
+
+          const { svg, bindFunctions } = await mermaid.render(`diagram-${renderCount++}`, diagrams[index]);
+          mermaidNode.innerHTML = svg;
+          if (typeof bindFunctions === "function") {
+            bindFunctions(mermaidNode);
+          }
         }
 
         setStatus("", "");
@@ -305,19 +370,17 @@
         }
 
         for (const entry of entries) {
-          const option = document.createElement("option");
-          option.value = entry.id;
-          option.textContent = entry.title;
-          select.appendChild(option);
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "diagram-nav-button";
+          button.dataset.diagramId = entry.id;
+          button.textContent = entry.title;
+          button.addEventListener("click", () => renderDiagram(entry));
+          nav.appendChild(button);
         }
 
-        select.addEventListener("change", () => {
-          const selected = entries.find((entry) => entry.id === select.value) || entries[0];
-          renderDiagram(selected);
-        });
-
-        select.value = entries[0].id;
-        renderDiagram(entries[0]);
+        const defaultEntry = entries.find((entry) => entry.id === "original-story-status-workflow") || entries[0];
+        renderDiagram(defaultEntry);
       } catch (error) {
         setStatus("is-error", `${error.message}. If you opened this page with file://, serve the repo over HTTP or use GitHub Pages.`);
       }

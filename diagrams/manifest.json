@@ -1,8 +1,20 @@
 [
   {
-    "id": "story-status-workflow",
-    "title": "Story Status Workflow",
-    "description": "Scrum ticket lifecycle with a design-vs-development decision branch.",
-    "file": "diagrams/story-status-workflow.md"
+    "id": "original-story-status-workflow",
+    "title": "1. Original Story Status Workflow",
+    "description": "Original scrum ticket lifecycle with a design-vs-development decision branch.",
+    "file": "diagrams/original-story-status-workflow.md"
+  },
+  {
+    "id": "original-workflow-commentary",
+    "title": "2. Original Workflow Commentary",
+    "description": "Commentary copy of the original workflow for annotations and optimization notes.",
+    "file": "diagrams/original-workflow-commentary.md"
+  },
+  {
+    "id": "proposed-story-status-workflow",
+    "title": "3. Proposed Story and Epic Status Workflow",
+    "description": "Proposed workflow incorporating the commentary and highlighting changed statuses.",
+    "file": "diagrams/proposed-story-status-workflow.md"
   }
 ]
