@@ -22,7 +22,7 @@
     html {
       background: var(--bg);
       color: var(--text);
-      font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+      font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
     }
 
     body {
@@ -264,7 +264,7 @@
         tertiaryColor: "#eef1f4",
         clusterBkg: "#e7ebef",
         clusterBorder: "#8fa29d",
-        fontFamily: "Avenir Next, Avenir, Segoe UI, sans-serif",
+        fontFamily: "Trebuchet MS, Verdana, Arial, sans-serif",
         edgeLabelBackground: "#ffffff",
         cScale0: "#ea75da",
         cScale1: "#f8ef9a",
@@ -318,6 +318,16 @@
       }
     }
 
+    async function waitForRenderReadiness() {
+      if (document.readyState !== "complete") {
+        await new Promise((resolve) => window.addEventListener("load", resolve, { once: true }));
+      }
+
+      if (document.fonts?.ready) {
+        await document.fonts.ready;
+      }
+    }
+
     let renderCount = 0;
 
     async function renderDiagram(entry) {
@@ -325,6 +335,8 @@
       setActiveNav(entry.id);
 
       try {
+        await waitForRenderReadiness();
+
         const response = await fetch(entry.file);
         if (!response.ok) {
           throw new Error(`Unable to load ${entry.file} (${response.status})`);
