@@ -140,31 +140,18 @@
       overflow: visible;
     }
 
-    .mermaid foreignObject {
-      overflow: visible;
-    }
-
-    .edgeLabel {
-      background: transparent !important;
-    }
-
-    .edgeLabel .label {
-      background: #ffffff !important;
-      border-radius: 8px;
-      padding: 6px 10px !important;
-      box-sizing: border-box;
-      white-space: normal !important;
-      line-height: 1.35;
-    }
-
-    .edgeLabel p {
-      margin: 0;
-      padding: 0;
-    }
-
-    .labelBkg {
+    .mermaid .labelBkg,
+    .mermaid .edgeLabel rect {
       fill: #ffffff !important;
       stroke: none !important;
+      rx: 8;
+      ry: 8;
+    }
+
+    .mermaid .edgeLabel text,
+    .mermaid .nodeLabel {
+      white-space: pre;
+      line-height: 1.35;
     }
 
     .diagram-wrap.is-loading::after,
@@ -251,8 +238,8 @@
 
     mermaid.initialize({
       startOnLoad: true,
-      htmlLabels: true,
-      markdownAutoWrap: true,
+      htmlLabels: false,
+      markdownAutoWrap: false,
       securityLevel: "loose",
       theme: "base",
       themeVariables: {
