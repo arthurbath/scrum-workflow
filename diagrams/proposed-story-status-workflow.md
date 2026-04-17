@@ -7,6 +7,7 @@ Proposed workflow that incorporates the commentary and highlights changed status
 ```mermaid
 flowchart TD
     NOTE_FLAGS["💬 General rule: blocked work should be indicated with Jira flags rather than a dedicated workflow status, so blockages remain visible in whatever stage the ticket is currently in."]
+    NOTE_PROPOSED["💬 Blue nodes indicate proposed new statuses or proposed changes to statuses that already exist."]
 
     B["Backlog"] -->|"PO prep begins"| RFR["Ready for Refinement"]
     RFR -->|"Ticket is refined and ready for estimation"| RFP["Ready for Pointing"]
@@ -49,7 +50,7 @@ flowchart TD
     classDef proposed fill:#d9ecff,stroke:#5a84b6,color:#11263f,stroke-width:1.5px;
     classDef note fill:#eef2f5,stroke:#b8c2cc,color:#2d3a45,stroke-width:1px;
     class RFR,RFP,RFD,RFDV,RCADEV,ICADEV,RCASTG,ICASTG proposed;
-    class NOTE_FLAGS note;
+    class NOTE_FLAGS,NOTE_PROPOSED note;
 ```
 
 ## Epic Workflow

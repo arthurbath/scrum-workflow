@@ -136,6 +136,35 @@
       padding: 18px 0 32px;
     }
 
+    .mermaid svg {
+      overflow: visible;
+    }
+
+    .mermaid foreignObject {
+      overflow: visible;
+    }
+
+    .mermaid .label,
+    .mermaid .nodeLabel,
+    .mermaid .edgeLabel .label,
+    .mermaid foreignObject div {
+      white-space: normal !important;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    .mermaid .nodeLabel,
+    .mermaid .label,
+    .mermaid foreignObject div {
+      max-width: 280px;
+    }
+
+    .mermaid .edgeLabel .label {
+      max-width: 220px;
+    }
+
     .edgeLabel {
       background: transparent !important;
     }
