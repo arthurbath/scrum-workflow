@@ -144,27 +144,6 @@
       overflow: visible;
     }
 
-    .mermaid .label,
-    .mermaid .nodeLabel,
-    .mermaid .edgeLabel .label,
-    .mermaid foreignObject div {
-      white-space: normal !important;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-      line-height: 1.35;
-      text-align: center;
-    }
-
-    .mermaid .nodeLabel,
-    .mermaid .label,
-    .mermaid foreignObject div {
-      max-width: 280px;
-    }
-
-    .mermaid .edgeLabel .label {
-      max-width: 220px;
-    }
-
     .edgeLabel {
       background: transparent !important;
     }
@@ -174,6 +153,8 @@
       border-radius: 8px;
       padding: 6px 10px !important;
       box-sizing: border-box;
+      white-space: normal !important;
+      line-height: 1.35;
     }
 
     .edgeLabel p {
@@ -270,6 +251,8 @@
 
     mermaid.initialize({
       startOnLoad: true,
+      htmlLabels: true,
+      markdownAutoWrap: true,
       securityLevel: "loose",
       theme: "base",
       themeVariables: {
@@ -289,10 +272,10 @@
       },
       flowchart: {
         curve: "basis",
-        htmlLabels: true,
         useMaxWidth: false,
-        nodeSpacing: 32,
-        rankSpacing: 36,
+        wrappingWidth: 190,
+        nodeSpacing: 56,
+        rankSpacing: 72,
         padding: 16
       }
     });
