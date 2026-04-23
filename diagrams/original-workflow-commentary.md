@@ -21,7 +21,6 @@ flowchart TD
 
     subgraph DE["Development Environment"]
         direction TB
-        CADEV -.- NOTE_CADEV["💬 I think this should be split into Ready for Code<br/>Approval and In Code Approval, since plenty of work can<br/>stack up that is ready to enter code approval without<br/>actually being picked up."]
         RQAD["5. Ready for QA - Dev"] -->|"QA begins testing in the<br/>Development environment"| IQAD["6. In QA - Dev"]
         IQAD -->|"Approved in Dev and ready<br/>for promotion to Staging"| RSTG["7. Ready for STG"]
     end
@@ -31,9 +30,9 @@ flowchart TD
     subgraph SE["Staging Environment"]
         direction TB
         CASTG["8. Code Approval - STG"] -->|"Deployed to Staging and<br/>awaiting verification"| RQAS["9. Ready for QA - STG"]
-        CASTG -.- NOTE_CASTG["💬 Ditto here: split this into Ready for Code<br/>Approval and In Code Approval so queued work is visible<br/>before someone actually picks it up."]
         RQAS -->|"QA begins testing in the<br/>Staging environment"| IQAS["10. In QA - STG"]
         IQAS -->|"Approved in Staging and ready<br/>for User Acceptance Testing"| RUAT["11. Ready for UAT"]
+        RUAT -.- NOTE_RUAT["💬 It would be beneficial to be able to tell which tickets<br/>are actively in UAT by having an In UAT status that comes<br/>after Ready for UAT and before Ready for PROD."]
         RUAT -->|"Signed off by stakeholders and ready<br/>for Production deployment"| RPROD["12. Ready for PROD"]
     end
 
@@ -49,5 +48,5 @@ flowchart TD
     IPROD -->|"Work complete"| DONE
 
     classDef note fill:#fff7d6,stroke:#c8b26a,color:#3a3320,stroke-width:1px;
-    class NOTE_B,NOTE_T,NOTE_HOLD,NOTE_CADEV,NOTE_CASTG,NOTE_IPROD note;
+    class NOTE_B,NOTE_T,NOTE_HOLD,NOTE_RUAT,NOTE_IPROD note;
 ```

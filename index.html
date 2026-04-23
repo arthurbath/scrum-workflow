@@ -327,7 +327,7 @@
       try {
         await waitForRenderReadiness();
 
-        const response = await fetch(entry.file);
+        const response = await fetch(entry.file, { cache: "no-store" });
         if (!response.ok) {
           throw new Error(`Unable to load ${entry.file} (${response.status})`);
         }
@@ -373,7 +373,7 @@
 
     async function boot() {
       try {
-        const response = await fetch(manifestPath);
+        const response = await fetch(manifestPath, { cache: "no-store" });
         if (!response.ok) {
           throw new Error(`Unable to load ${manifestPath}`);
         }

@@ -19,25 +19,24 @@ flowchart TD
     DEC -->|"Development story"| RFP["Ready for Pointing"]
     RFP -->|"Ticket is pointed and ready for development"| RFDV["Ready for Development"]
     RFDV -->|"Development issue begins coding"| DEV["In Development"]
-    DEV -->|"Peer review is needed in Dev"| RCADEV["Ready for Code Approval - Dev"]
+    DEV -->|"Peer review is needed in Dev"| CADEV["Code Approval - Dev"]
 
     subgraph DE["Development Environment"]
         direction TB
-        RCADEV -->|"Reviewer picks up the work"| ICADEV["Undergoing Code Approval - Dev"]
-        ICADEV -->|"Approved and deployed to Dev;<br/>awaiting QA testing"| RQAD["Ready for QA - Dev"]
+        CADEV -->|"Approved and deployed to Dev;<br/>awaiting QA testing"| RQAD["Ready for QA - Dev"]
         RQAD -->|"QA begins testing in the<br/>Development environment"| IQAD["In QA - Dev"]
         IQAD -->|"Approved in Dev and ready<br/>for promotion to Staging"| RSTG["Ready for STG"]
     end
 
-    RSTG -->|"Awaiting code review for Staging"| RCASTG["Ready for Code Approval - STG"]
+    RSTG -->|"Awaiting code review for Staging"| CASTG["Code Approval - STG"]
 
     subgraph SE["Staging Environment"]
         direction TB
-        RCASTG -->|"Reviewer picks up the work"| ICASTG["Undergoing Code Approval - STG"]
-        ICASTG -->|"Deployed to Staging and<br/>awaiting verification"| RQAS["Ready for QA - STG"]
+        CASTG -->|"Deployed to Staging and<br/>awaiting verification"| RQAS["Ready for QA - STG"]
         RQAS -->|"QA begins testing in the<br/>Staging environment"| IQAS["In QA - STG"]
         IQAS -->|"Approved in Staging and ready<br/>for User Acceptance Testing"| RUAT["Ready for UAT"]
-        RUAT -->|"Signed off by stakeholders and ready<br/>for Production deployment"| RPROD["Ready for PROD"]
+        RUAT -->|"Stakeholders begin acceptance testing"| IUAT["In UAT"]
+        IUAT -->|"UAT signoff is complete and ready<br/>for Production deployment"| RPROD["Ready for PROD"]
     end
 
     subgraph PE["Production Environment"]
@@ -49,7 +48,7 @@ flowchart TD
 
     classDef proposed fill:#d9ecff,stroke:#5a84b6,color:#11263f,stroke-width:1.5px;
     classDef note fill:#eef2f5,stroke:#b8c2cc,color:#2d3a45,stroke-width:1px;
-    class RFR,RFP,RFD,RFDV,RCADEV,ICADEV,RCASTG,ICASTG proposed;
+    class RFR,RFP,RFD,RFDV,IUAT proposed;
     class NOTE_FLAGS,NOTE_PROPOSED note;
 ```
 
